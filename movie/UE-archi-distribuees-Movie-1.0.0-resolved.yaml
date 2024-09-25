@@ -179,6 +179,39 @@ paths:
           description: rate updated
         "400":
           description: movie ID not found
+  /movies/{movieid}/{getinfo}:
+    get:
+      tags:
+      - developers
+      summary: get the movie specific infos by id and info type
+      description: By passing in the appropriate options, you can get info of a Movie
+      operationId: get_info
+      parameters:
+      - name: movieid,getinfo
+        in: path
+        description: Movie ID and type of info
+        required: true
+        schema:
+          type: array
+      responses:
+        "200":
+          description: the specified info of the specified movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        "400":
+          description: bad input parameter
+  /help:
+    get:
+      tags:
+        - developers
+      summary: get the different entry point from openapi
+      description: get the different entry point
+      responses:
+        '200':
+          description: the whole entry points
+          
 components:
   schemas:
     AllMovies:
@@ -211,5 +244,10 @@ components:
         id:
           type: string
           example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
+    info:
+      type: string
+      properties:
+        property:
+          type: string
 
 
