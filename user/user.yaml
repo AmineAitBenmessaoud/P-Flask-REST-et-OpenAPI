@@ -1,8 +1,7 @@
----
 openapi: 3.0.3
 info:
-  title: Booking API
-  description: This is the API of the Booking service
+  title: User Service API
+  description: API for the User service
   contact:
     email: helene.coullon@imt-atlantique.fr
   license:
@@ -10,139 +9,172 @@ info:
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
 tags:
-- name: admins
-  description: Secured Admin-only calls
 - name: developers
-  description: Operations available to regular developers
+  description: Operations available to developers
 paths:
   /:
     get:
       tags:
       - developers
-      summary: home page of the service
-      description: |
-        Nothing to do
+      summary: Home page of the service
+      description: Returns the homepage of the service
       operationId: home
       responses:
-        "200":
-          description: welcome message
+        '200':
+          description: Successful response
           content:
             text/html:
               schema:
                 type: string
-                example: <h1>Test</h1>
+                example: "<h1 style='color:blue'>Welcome to the User service!</h1>"
   /users:
     get:
       tags:
       - developers
-      summary: get the full JSON database
-      description: |
-        Nothing to do
-      operationId: get_json
+      summary: Get all users
+      description: Returns a list of all users
+      operationId: getUsers
       responses:
-        "200":
-          description: full JSON
+        '200':
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllUsers'
-  /bookings/{userid}:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: John Doe
+                    email:
+                      type: string
+                      example: john.doe@example.com
+  /movies:
     get:
       tags:
       - developers
-      summary: get the bookings from a user id
-      description: By passing in the appropriate options, you can get bookings of a user
-      operationId: get_booking_for_user
-      parameters:
-      - name: userid
-        in: path
-        description: User ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+      summary: Get all movies
+      description: Returns a list of all movies from the movies API
+      operationId: getMovies
       responses:
-        "200":
-          description: Bookings of the user
+        '200':
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BookingsUser'
-        "400":
-          description: bad input parameter
-    post:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: Inception
+                    director:
+                      type: string
+                      example: Christopher Nolan
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to fetch movies"
+  /bookings/{user_id}:
+    get:
       tags:
-      - admins
-      summary: add a booking for a user
-      description: Adds a booking for the user, the service showtimes have to be requested to check the validity of the booking that is asked
-      operationId: add_booking_byuser
+      - developers
+      summary: Get bookings for a user
+      description: Returns a list of bookings for a specific user
+      operationId: getBookings
       parameters:
-      - name: userid
-        in: path
-        description: User ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      requestBody:
-        description: item to add
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewMovie'
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
       responses:
-        "200":
-          description: Booking created
+        '200':
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BookingsUser'
-        "409":
-          description: an existing item already exists
-components:
-  schemas:
-    AllUsers:
-      type: array
-      items:
-        $ref: '#/components/schemas/BookingsUser'
-    BookingsUser:
-      required:
-      - dates
-      - userid
-      type: object
-      properties:
-        userid:
-          type: string
-          example: chris_rivers
-        dates:
-          type: array
-          items:
-            $ref: '#/components/schemas/DateItem'
-    DateItem:
-      required:
-      - date
-      - movies
-      type: object
-      properties:
-        date:
-          type: string
-          example: "20151201"
-        movies:
-          type: array
-          items:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    example: 1
+                  bookings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        booking_id:
+                          type: integer
+                          example: 101
+                        date:
+                          type: string
+                          example: "2023-10-01"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  /moviesinfo/{user_id}:
+    get:
+      tags:
+      - developers
+      summary: Get movies info for a user
+      description: Returns detailed movie information for a specific user's bookings
+      operationId: getMoviesInfo
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
             type: string
-            example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
-    NewMovie:
-      required:
-      - date
-      - movieid
-      type: object
-      properties:
-        date:
-          type: string
-          example: "20151201"
-        movieid:
-          type: string
-          example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+          description: ID of the user
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: Inception
+                    director:
+                      type: string
+                      example: Christopher Nolan
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"

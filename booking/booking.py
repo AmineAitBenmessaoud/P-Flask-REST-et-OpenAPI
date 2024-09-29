@@ -24,6 +24,10 @@ def get_bookings_byuserid(userid):
          res = make_response(jsonify(booking),200)
          return res
    return  make_response(jsonify("error date not found"),400)
+@app.route("/showmovies/<date>", methods=['GET'])
+def get_movie_bydate(date):
+   response = requests.get("http://127.0.0.1:3202/showmovies/{}".format(date))
+   return response.json()
 @app.route("/bookings/<userid>", methods=['POST'])
 def add_bookings_byuserid(userid):
    req = request.get_json()
