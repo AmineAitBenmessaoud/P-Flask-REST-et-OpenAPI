@@ -1,6 +1,3 @@
-Here’s an improved version of the README file:
-
----
 
 # UE-AD-A1-REST
 
@@ -99,7 +96,3 @@ Follow these steps to set up and run the project locally.
      ```
      http://127.0.0.1:3200/movies/720d006c-3a57-4b6a-b18f-9b713b073f3c
      ```
-
----
-
-This version provides clearer headings, formatting consistency, and simplifies the steps for a better user experience. Let me know if you'd like to add or adjust anything!
