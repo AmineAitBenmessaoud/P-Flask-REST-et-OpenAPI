@@ -28,18 +28,11 @@ def get_bookings_byuserid(userid):
 def get_movie_bydate(date):
    response = requests.get("http://127.0.0.1:3202/showmovies/{}".format(date))
    return response.json()
-@app.route("/bookings/<userid>", methods=['POST'])
+@app.route("/book/<userid>", methods=['POST'])
 def add_bookings_byuserid(userid):
    req = request.get_json()
-   for booking in bookings:
-      if str(booking["userid"])==str(userid):
-         if(str(req)==str(booking["dates"])):
-            return make_response(jsonify({"error : an existing item already exists"}),409)
-         else :
-            booking["dates"].append(req)
-   write(bookings)
-   res = make_response(jsonify({"message":"movie added"}),200)
-   return res
+   
+   return ""
 def write(bookings):
     with open('{}/databases/bookings.json'.format("."), 'w') as f:
         json.dump({"bookings ":  bookings}, f)
